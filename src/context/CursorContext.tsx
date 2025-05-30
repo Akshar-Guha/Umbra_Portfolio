@@ -1,9 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 
 interface CursorContextType {
-  // TODO: Define cursor context type
+  [key: string]: unknown; // Placeholder for context properties
 }
 
 const CursorContext = createContext<CursorContextType | undefined>(undefined);

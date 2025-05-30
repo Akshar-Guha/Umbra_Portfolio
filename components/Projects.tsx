@@ -8,19 +8,19 @@ const projects = [
     id: 1,
     name: 'Project Alpha',
     glyph: '>_',
-    hash: generateSHA256Placeholder(), // Use the new placeholder function
+    hash: generateSHA256Placeholder('Project Alpha'), // Pass project name as argument
   },
   {
     id: 2,
     name: 'Project Beta',
     glyph: '//',
-    hash: generateSHA256Placeholder(), // Use the new placeholder function
+    hash: generateSHA256Placeholder('Project Beta'), // Pass project name as argument
   },
   {
     id: 3,
     name: 'Project Gamma',
     glyph: '{}',
-    hash: generateSHA256Placeholder(), // Use the new placeholder function
+    hash: generateSHA256Placeholder('Project Gamma'), // Pass project name as argument
   },
   // Add more placeholder projects as needed
 ];

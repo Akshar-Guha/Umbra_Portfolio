@@ -30,7 +30,7 @@ const OpenSource: React.FC = () => {
             <div key={index} className="bg-gray-900 rounded-lg p-6 shadow-xl border border-gray-800">
               <h3 className="text-xl font-bold text-gray-300 mb-2 font-mono">{contribution.project}</h3>
               <p className="text-gray-400 text-sm mb-4">{contribution.description}</p>
-              <a href={contribution.link} className="text-blue-400 hover:underline text-sm font-mono" target="_blank" rel="noopener noreferrer">\{ Access Record \}</a>{/* Thematic link text */}
+              <a href={contribution.link} className="text-blue-400 hover:underline text-sm font-mono" target="_blank" rel="noopener noreferrer">&#123; Access Record &#125;</a>{/* Thematic link text */}
             </div>
           ))}
         </div>

@@ -35,19 +35,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     return `${x}% ${y}%`;
   }, [project.id]);
 
-  // Generate a subtle dynamic background color based on project ID deterministically
-  const dynamicBgColor = useMemo(() => {
-    // Use a simple deterministic function based on project ID
-    const colors = [
-      '#1a202c', // gray-900
-      '#1f2937', // gray-800
-      '#2d3748', // gray-700
-      '#4a5568', // gray-600
-    ];
-    const colorIndex = project.id % colors.length;
-    return colors[colorIndex];
-  }, [project.id]);
-
   // Function to get a partial hash - showing the first 8 characters (no longer needed here but keeping for reference or potential future use)
   // const getPartialHash = (hash: string) => {
   //   return hash.substring(0, 8) + '...';

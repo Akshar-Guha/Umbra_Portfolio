@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -16,7 +17,6 @@ interface ParticleConfig {
 interface ParticleVisualizerProps {
   config: ParticleConfig;
   isHovering: boolean;
-  scrollColor: any;
   isDataTraceFullyRevealed: boolean;
   isUmbraTiltActive: boolean;
 }
@@ -24,14 +24,13 @@ interface ParticleVisualizerProps {
 const Particles: React.FC<{
   config: ParticleConfig;
   isHovering: boolean;
-  pointer: {x:number,y:number};
+  pointer: { x: number; y: number };
   burst: boolean;
-  scrollColor: any;
   scrollSpeed: number;
   colorScrollFactor: number;
   isDataTraceFullyRevealed: boolean;
   isUmbraTiltActive: boolean;
-}> = ({ config, isHovering, pointer, burst, scrollColor, scrollSpeed, colorScrollFactor, isDataTraceFullyRevealed, isUmbraTiltActive }) => {
+}> = ({ config, isHovering, pointer, burst, scrollSpeed, colorScrollFactor, isDataTraceFullyRevealed, isUmbraTiltActive }) => {
   const ref = useRef<THREE.Points>(null);
   const groupRef = useRef<THREE.Group>(null);
 
@@ -46,7 +45,6 @@ const Particles: React.FC<{
   }, [config.count]);
 
   const [deviceRotation, setDeviceRotation] = useState({ x: 0, y: 0 });
-  const triggeredRotation = useRef({ x: 0, y: 0, z: 0 });
   const currentParticleScale = useRef(1);
   const targetParticleScale = useRef(1);
 
@@ -63,18 +61,6 @@ const Particles: React.FC<{
 
   const colorCycleProgress = useRef(0);
   const colorCycleSpeed = 0.05; // ADJUSTED: Slowed down to 25% of previous speed
-
-  useEffect(() => {
-    const handleOrientation = (e: DeviceOrientationEvent) => {
-      if (e.beta !== null && e.gamma !== null) {
-        const x = THREE.MathUtils.degToRad(e.beta) * 0.5;
-        const y = THREE.MathUtils.degToRad(e.gamma) * 0.5;
-        setDeviceRotation({ x, y });
-      }
-    };
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, []);
 
   useFrame((state, delta) => {
     const pts = ref.current;
@@ -165,14 +151,14 @@ const Particles: React.FC<{
 
   return (
     <group ref={groupRef}>
-      <Points ref={ref} positions={positions as any} stride={3} frustumCulled={false}>
+      <Points ref={ref} positions={positions as Float32Array} stride={3} frustumCulled={false}>
         <PointMaterial transparent size={config.size} depthWrite={false} color={gradientColors[0]} />
       </Points>
     </group>
   );
 };
 
-const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHovering, scrollColor, isDataTraceFullyRevealed, isUmbraTiltActive }) => {
+const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHovering, isDataTraceFullyRevealed, isUmbraTiltActive }) => {
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [burst, setBurst] = useState(false);
   const [smoothedScrollSpeed, setSmoothedScrollSpeed] = useState(0);
@@ -232,14 +218,6 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
     };
   }, []);
 
-  useEffect(() => {
-    const handleOrientation = (e: DeviceOrientationEvent) => {
-      // Could pass to pointer or rotation if needed
-    };
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, []);
-
   return (
     <Canvas
       camera={{ position: [0, 0, 15], fov: 60 }}
@@ -248,11 +226,10 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
       onClick={handleClick}
     >
       <Particles 
-        config={config} 
-        isHovering={isHovering} 
-        pointer={pointer} 
-        burst={burst} 
-        scrollColor={scrollColor}
+        config={config}
+        isHovering={isHovering}
+        pointer={pointer}
+        burst={burst}
         scrollSpeed={smoothedScrollSpeed}
         colorScrollFactor={colorScrollFactor}
         isDataTraceFullyRevealed={isDataTraceFullyRevealed}

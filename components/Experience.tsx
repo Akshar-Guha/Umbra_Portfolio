@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion'; // Import motion, useScroll, useTransform
+import { motion } from 'framer-motion';
 
 // Placeholder experience data
 const experiences = [
@@ -36,23 +36,14 @@ const Experience: React.FC<ExperienceProps> = ({ onFullyRevealed, hideExperience
   const [clickActivationCount, setClickActivationCount] = useState(0);
   const [revealedBlocksCount, setRevealedBlocksCount] = useState(0);
 
-  // const { scrollYProgress: containerScrollYProgress } = useScroll({
-  //   target: containerRef, // Keep target for the main vertical line
-  //   offset: ["start end", "end start"], // Start when target enters end of viewport, end when target leaves start of viewport
-  // });
-
-  // Animate scaleY of the line based on scroll progress. Map scroll progress range [0, 1] to scaleY range [0, 1]
-  // const lineScaleY = useTransform(containerScrollYProgress, [0, 1], [0, 1]);
-  // Removed scroll-based line animation
-
   // Measure container height after render
   useEffect(() => {
     if (containerRef.current) {
-      setContainerHeight(containerRef.current.scrollHeight); // Use scrollHeight to get full content height
+      setContainerHeight(containerRef.current.scrollHeight);
     } else {
       setContainerHeight(0);
     }
-  }, [experiences, visibilityPhase]); // Recalculate if experiences or visibilityPhase change (for initial render)
+  }, [visibilityPhase]);
 
   // Manage phase transitions
   useEffect(() => {

@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import React, { useRef } from 'react';
 
 interface HeroProps {
   onUmbraTiltTriggered: () => void;
