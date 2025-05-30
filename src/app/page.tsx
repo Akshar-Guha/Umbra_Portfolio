@@ -1,103 +1,99 @@
-import Image from "next/image";
+'use client';
+
+import dynamic from 'next/dynamic';
+import React, { useState, useCallback, useRef } from 'react';
+import Experience from '../../components/Experience';
+import Footer from '@/components/Footer';
+import Header from '../../components/Header';
+import ParticleVisualizer from '../../components/ParticleVisualizer';
+import ControlsPanel from '../../components/ControlsPanel';
+import { useScroll, useTransform } from 'framer-motion';
+
+// Dynamically import Hero component to ensure it only runs on the client side
+const DynamicHero = dynamic(() => import('@/components/Hero').then(mod => mod.default), {
+  ssr: false,
+  loading: () => <div className="text-white">Loading Hero...</div>,
+});
+
+// Define a type for the particle parameters
+interface ParticleConfig {
+  count: number;
+  size: number;
+  strobeSpeed: number;
+  burstStrength: number;
+  // Add more parameters as needed: e.g., color palette, algorithm type
+  baseColor: string; // Example: can be used for initial color before strobing
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Set initial particle configuration
+  const [particleConfig, setParticleConfig] = useState<ParticleConfig>({
+    count: 9000, // Increased particle count
+    size: 0.03, // Increased particle size
+    strobeSpeed: 1,
+    burstStrength: 3,
+    baseColor: '#ffffff',
+  });
+  const [isHovering, setIsHovering] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  // Placeholder for updating individual particle config values - to be used by ControlsPanel
+  const updateParticleConfig = useCallback((newConfig: Partial<ParticleConfig>) => {
+    setParticleConfig(prevConfig => ({ ...prevConfig, ...newConfig }));
+  }, []);
+
+  // Handlers for particle interaction area (full screen div)
+  const handleParticlePointerEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleParticlePointerLeave = () => {
+    setIsHovering(false);
+  };
+
+  // Note: onPointerMove is handled internally by ParticleVisualizer component
+
+  // Scroll-based color transformation
+  // Use window scroll
+  const { scrollYProgress } = useScroll(); // Get scroll progress for the default scroll container (window/body)
+
+  // Define your color preset (e.g., an array of color strings or hex values)
+  // 7 color preset for scroll-based transition
+  const colorPalette = ['#8F00FF', '#00F5A0', '#FFFFFF', '#FF00FF', '#00FFFF', '#FFFF00', '#FF69B4']; // Violet, Mint, White, Magenta, Cyan, Yellow, Hot Pink
+  const scrollColor = useTransform(
+    scrollYProgress,
+    [0, 1/6, 2/6, 3/6, 4/6, 5/6, 1], // Map scroll progress across 7 colors
+    colorPalette // The corresponding colors
+  );
+
+  return (
+    <main className="w-screen relative">
+      {/* Particle Visualizer - Positioned absolutely behind content */}
+      <div
+        className="fixed inset-0 z-0 h-screen"
+        onPointerEnter={handleParticlePointerEnter}
+        onPointerLeave={handleParticlePointerLeave}
+        // onPointerMove is handled by the Canvas component internally
+      >
+        <ParticleVisualizer 
+          config={particleConfig}
+          isHovering={isHovering}
+          scrollColor={scrollColor}
+        />
+      </div>
+      
+      <Header />
+
+      {/* Content Container - Positioned above the visualizer */}
+      <div className="relative z-10">
+        <DynamicHero />
+
+        <Experience />
+
+        {/* Removed Footer component */}
+
+        {/* Removed Controls for particle color and size */}
+
+      </div>
+    </main>
   );
 }
