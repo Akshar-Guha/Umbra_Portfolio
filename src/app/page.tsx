@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import React, { useState, useCallback, useRef } from 'react';
 import Experience from '../../components/Experience';
 import Footer from '@/components/Footer';
-import Header from '../../components/Header';
+import HamburgerMenu from '../../components/HamburgerMenu';
 import ParticleVisualizer from '../../components/ParticleVisualizer';
 import ControlsPanel from '../../components/ControlsPanel';
 import { useScroll, useTransform } from 'framer-motion';
@@ -35,6 +35,10 @@ export default function Home() {
     baseColor: '#ffffff',
   });
   const [isHovering, setIsHovering] = useState(false);
+  const [isDataTraceFullyRevealed, setIsDataTraceFullyRevealed] = useState(false);
+  const [isUmbraTiltActive, setIsUmbraTiltActive] = useState(false);
+  const [hasDataTraceBeenRevealedAtLeastOnce, setHasDataTraceBeenRevealedAtLeastOnce] = useState(false);
+  const [hasFirstUmbraTiltOccurred, setHasFirstUmbraTiltOccurred] = useState(false);
 
   // Placeholder for updating individual particle config values - to be used by ControlsPanel
   const updateParticleConfig = useCallback((newConfig: Partial<ParticleConfig>) => {
@@ -65,6 +69,28 @@ export default function Home() {
     colorPalette // The corresponding colors
   );
 
+  const handleDataTraceFullyRevealed = useCallback(() => {
+    setIsDataTraceFullyRevealed(true);
+    setHasDataTraceBeenRevealedAtLeastOnce(true);
+    console.log("Data Trace fully revealed. At least once: true");
+  }, []);
+
+  const handleUmbraTiltTrigger = useCallback(() => {
+    if (!hasDataTraceBeenRevealedAtLeastOnce) {
+      console.log("Umbra tilt trigger ignored: Data Trace not yet revealed at least once.");
+      return;
+    }
+
+    if (!hasFirstUmbraTiltOccurred) {
+      setIsUmbraTiltActive(true);
+      setHasFirstUmbraTiltOccurred(true);
+      console.log("First Umbra tilt triggered (4 taps). Tilt active, First Occurred: true");
+    } else {
+      setIsUmbraTiltActive(prev => !prev);
+      console.log("Subsequent Umbra tilt triggered (2 taps). Tilt active:", !isUmbraTiltActive);
+    }
+  }, [hasDataTraceBeenRevealedAtLeastOnce, hasFirstUmbraTiltOccurred, isUmbraTiltActive]);
+
   return (
     <main className="w-screen relative">
       {/* Particle Visualizer - Positioned absolutely behind content */}
@@ -78,16 +104,25 @@ export default function Home() {
           config={particleConfig}
           isHovering={isHovering}
           scrollColor={scrollColor}
+          isDataTraceFullyRevealed={isDataTraceFullyRevealed}
+          isUmbraTiltActive={isUmbraTiltActive}
         />
       </div>
       
-      <Header />
+      <HamburgerMenu />
 
       {/* Content Container - Positioned above the visualizer */}
       <div className="relative z-10">
-        <DynamicHero />
+        <DynamicHero 
+          onUmbraTiltTriggered={handleUmbraTiltTrigger}
+          hasDataTraceBeenRevealedAtLeastOnce={hasDataTraceBeenRevealedAtLeastOnce}
+          hasFirstUmbraTiltOccurred={hasFirstUmbraTiltOccurred}
+        />
 
-        <Experience />
+        <Experience 
+          onFullyRevealed={handleDataTraceFullyRevealed} 
+          hideExperienceContent={hasFirstUmbraTiltOccurred} 
+        />
 
         {/* Removed Footer component */}
 

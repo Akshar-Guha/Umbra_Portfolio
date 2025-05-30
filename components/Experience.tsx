@@ -23,7 +23,12 @@ const experiences = [
 
 type VisibilityPhase = 'blank' | 'initialFlash' | 'hidden' | 'revealing' | 'fullyRevealed';
 
-const Experience: React.FC = () => {
+interface ExperienceProps {
+  onFullyRevealed: () => void;
+  hideExperienceContent: boolean; // New prop
+}
+
+const Experience: React.FC<ExperienceProps> = ({ onFullyRevealed, hideExperienceContent }) => {
   const containerRef = useRef<HTMLDivElement>(null); // Ref for the scrollable container of the whole section
   const [containerHeight, setContainerHeight] = useState(0); // State to store container height
 
@@ -90,12 +95,25 @@ const Experience: React.FC = () => {
           setVisibilityPhase('revealing'); // Transition from hidden to revealing
         } else if (nextRevealedCount >= experiences.length) {
           setVisibilityPhase('fullyRevealed'); // Transition to fully revealed
+          onFullyRevealed(); // Call the new callback prop here
         }
       }
     }
   };
 
   const shouldShowVerticalLine = visibilityPhase === 'revealing' || visibilityPhase === 'fullyRevealed';
+
+  // If hideExperienceContent is true, render nothing or a minimal placeholder
+  if (hideExperienceContent) {
+    return (
+      <section id="experience" className="py-16 text-white pt-32 min-h-screen">
+        <div className="container mx-auto px-4 text-center">
+          {/* Optional: Message indicating content was archived or transformed */}
+          {/* <p className="text-gray-500 italic">Data Trace Archived.</p> */}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="experience" className="py-16 text-white pt-32 min-h-screen" onClick={handleClick} style={{ cursor: 'pointer' }}> {/* Remove bg-black */}

@@ -19,13 +19,30 @@
   }
 }
 
-html,
 body {
-  padding: 0;
-  margin: 0;
-  background-color: #000000;
-  color: #ffffff;
-  overflow-x: hidden;
+  /* Mobile background by default */
+  background-image: url('/images/peakpx(1).jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Keeps background fixed during scroll */
+  min-height: 100vh;
+  width: 100%;
+  margin: 0; /* Remove default body margin */
+  padding: 0; /* Remove default body padding */
+}
+
+@media (min-width: 768px) { /* Breakpoint for desktop */
+  body {
+    /* Desktop background for larger screens */
+    background-image: url('/images/peakpx.jpg');
+    background-position: top center; /* Added for better desktop alignment */
+  }
+}
+
+/* Ensure html and body take full height for background to always show */
+html, body {
+  height: 100%;
 }
 
 html {
