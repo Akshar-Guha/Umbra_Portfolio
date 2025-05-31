@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 interface HeroProps {
   onUmbraTiltTriggered: () => void;
@@ -44,7 +44,7 @@ const Hero: React.FC<HeroProps> = ({
           className="text-white text-4xl cursor-pointer"
           onClick={handleUmbraClick}
         >
-          Umbra
+          {'{Umbra}'}
         </h1>
       </div>
     </section>

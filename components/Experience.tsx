@@ -4,19 +4,19 @@ import { motion } from 'framer-motion';
 // Placeholder experience data
 const experiences = [
   {
-    year: '████', // Placeholder year
+    year: '2 more to Go', // Placeholder year
     title: 'Umbra is my In game Name', // Updated title
-    description: '', // Description is empty as requested
+    description: 'OOoooK—so you\'ve been told what to do. Don\'t hesitate now.\nTake a deep breath, then **&&*** double-tap, like you\'re calling up something Faster than you.think', // Updated description for 1st block
   },
   {
-    year: '████', // Placeholder year
-    title: 'umbra', // Updated title
-    description: 'umbra', // Updated description
+    year: 'what a waste,', // Placeholder year
+    title: 'Whats Up', // Updated title
+    description: 'You just wasted your focus with a single tap. Someone who knew what they were doing would\'ve skipped that and gone straight for the {Umbra} icon with a double-tap. &&', // Updated description for 2nd block
   },
   {
-    year: '████', // Placeholder year
-    title: 'umbra', // Updated title
-    description: 'umbra', // Updated description
+    year: 'Lets end this perfectly', // Placeholder year
+    title: 'Here, Data Is handled with Privacy Not Piracy,', // Updated title
+    description: 'But fine—if you still need your little routine, **tap four times** on {Umbra}. Watch how the shadows change into shapes you won\'t forget.\nRemember Block 2 instructions: there\'s no room for half-steps in darkness.\n–x–0', // Updated description for 3rd block
   },
   // Add more placeholder entries as needed
 ];
@@ -43,7 +43,7 @@ const Experience: React.FC<ExperienceProps> = ({ onFullyRevealed, hideExperience
     } else {
       setContainerHeight(0);
     }
-  }, [visibilityPhase]);
+  }, [containerRef.current, visibilityPhase]);
 
   // Manage phase transitions
   useEffect(() => {
@@ -147,7 +147,10 @@ const Experience: React.FC<ExperienceProps> = ({ onFullyRevealed, hideExperience
                 ml-10 mr-10 md:ml-0 md:mr-0 md:w-5/12 md:px-6 md:py-4 
                 ${index % 2 === 0 ? 'md:text-right md:ml-auto' : 'md:text-left md:mr-auto'}
               `}>
-                <h3 className="mb-2 md:mb-3 font-bold text-gray-300 text-base md:text-xl font-mono">{item.year} - {item.title}</h3>
+                <h3 className="mb-2 md:mb-3 font-bold text-gray-300 font-sans flex flex-wrap items-center">
+                  <span className="italic text-xs bg-gray-800 px-1 py-0.5 rounded mr-2">{item.year}</span>
+                  - <span className="text-sm md:text-base ml-2">{item.title}</span>
+                </h3>
                 <p className="text-sm leading-snug tracking-wide text-gray-400 text-opacity-100">{item.description}</p>
               </div>
               {/* Timeline dot */}
@@ -188,7 +191,10 @@ const Experience: React.FC<ExperienceProps> = ({ onFullyRevealed, hideExperience
                 ml-10 mr-10 md:ml-0 md:mr-0 md:w-5/12 md:px-6 md:py-4 
                 ${index % 2 === 0 ? 'md:text-right md:ml-auto' : 'md:text-left md:mr-auto'}
               `}>
-                <h3 className="mb-2 md:mb-3 font-bold text-gray-300 text-base md:text-xl font-mono">{item.year} - {item.title}</h3>
+                <h3 className="mb-2 md:mb-3 font-bold text-gray-300 font-sans flex flex-wrap items-center">
+                  <span className="italic text-xs bg-gray-800 px-1 py-0.5 rounded mr-2">{item.year}</span>
+                  - <span className="text-sm md:text-base ml-2">{item.title}</span>
+                </h3>
                 <p className="text-sm leading-snug tracking-wide text-gray-400 text-opacity-100">{item.description}</p>
               </div>
               {/* Timeline dot */}

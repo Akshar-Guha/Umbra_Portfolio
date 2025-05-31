@@ -2,9 +2,7 @@
 
 import React, { createContext, useContext } from 'react';
 
-interface CursorContextType {
-  [key: string]: unknown; // Placeholder for context properties
-}
+type CursorContextType = Record<string, unknown>; // Placeholder for context properties
 
 const CursorContext = createContext<CursorContextType | undefined>(undefined);
 

@@ -5,6 +5,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import { RootState } from '@react-three/fiber';
 
 interface ParticleConfig {
   count: number;
@@ -12,6 +13,9 @@ interface ParticleConfig {
   strobeSpeed: number;
   burstStrength: number;
   baseColor: string;
+  zRadius: number;
+  flowDirection: THREE.Vector3;
+  speedMultiplier: number;
 }
 
 interface ParticleVisualizerProps {
@@ -37,12 +41,16 @@ const Particles: React.FC<{
   const positions = React.useMemo(() => {
     const arr = new Float32Array(config.count * 3);
     for (let i = 0; i < config.count; i++) {
-      arr[i * 3]     = (Math.random() - 0.5) * 30;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 30;
+      // Distribute particles within a sphere, considering zRadius
+      const r = Math.random() * 30; // Keep initial radius for x and y similar
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI; // For spherical distribution
+      arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      arr[i * 3 + 2] = (Math.random() - 0.5) * config.zRadius * 2; // Use zRadius for z-distribution
     }
     return arr;
-  }, [config.count]);
+  }, [config.count, config.zRadius]);
 
   const [deviceRotation, setDeviceRotation] = useState({ x: 0, y: 0 });
   const currentParticleScale = useRef(1);
@@ -62,11 +70,13 @@ const Particles: React.FC<{
   const colorCycleProgress = useRef(0);
   const colorCycleSpeed = 0.05; // ADJUSTED: Slowed down to 25% of previous speed
 
-  useFrame((state, delta) => {
+  useFrame((state: RootState, delta: number) => {
     const pts = ref.current;
     const group = groupRef.current;
 
     if (!pts || !group) return;
+
+    const currentSpeed = (isDataTraceFullyRevealed || isUmbraTiltActive) ? config.speedMultiplier : 1;
 
     // Update target scale based on tilt state
     if (isUmbraTiltActive) {
@@ -94,6 +104,37 @@ const Particles: React.FC<{
       group.rotation.z += (0 - group.rotation.z) * 0.05;
     }
 
+    // Apply flow direction and speed multiplier when Umbra Tilt is active
+    if (isUmbraTiltActive && pts.geometry instanceof THREE.BufferGeometry) {
+      const positions = pts.geometry.attributes.position.array;
+      const flow = config.flowDirection.clone().multiplyScalar(delta * currentSpeed * 5); // Adjust multiplier for visible movement
+
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i] += flow.x;
+        positions[i + 1] += flow.y;
+        positions[i + 2] += flow.z;
+
+        // Optional: Wrap particles around if they go out of bounds (simple example for Z)
+        // if (positions[i + 2] > config.zRadius) positions[i + 2] -= config.zRadius * 2;
+        // if (positions[i + 2] < -config.zRadius) positions[i + 2] += config.zRadius * 2;
+
+        // Wrap particles around on X, Y, and Z axes
+        const boundaryX = 30; // Based on initial distribution
+        const boundaryY = 30; // Based on initial distribution
+        const boundaryZ = config.zRadius; // Based on config.zRadius
+
+        if (positions[i] > boundaryX) positions[i] -= boundaryX * 2;
+        if (positions[i] < -boundaryX) positions[i] += boundaryX * 2;
+
+        if (positions[i + 1] > boundaryY) positions[i + 1] -= boundaryY * 2;
+        if (positions[i + 1] < -boundaryY) positions[i + 1] += boundaryY * 2;
+
+        if (positions[i + 2] > boundaryZ) positions[i + 2] -= boundaryZ * 2;
+        if (positions[i + 2] < -boundaryZ) positions[i + 2] += boundaryZ * 2;
+      }
+      pts.geometry.attributes.position.needsUpdate = true;
+    }
+
     if (deviceRotation.x !== 0 || deviceRotation.y !== 0) {
        pts.rotation.x += (deviceRotation.x - pts.rotation.x) * 0.1;
        pts.rotation.y += (deviceRotation.y - pts.rotation.y) * 0.1;
@@ -105,8 +146,8 @@ const Particles: React.FC<{
        const baseRotationSpeedX = 0.01;
 
        let currentScrollSpeed = scrollSpeed;
-       let currentBaseSpeedY = baseRotationSpeedY;
-       let currentBaseSpeedX = baseRotationSpeedX;
+       let currentBaseSpeedY = baseRotationSpeedY * currentSpeed;
+       let currentBaseSpeedX = baseRotationSpeedX * currentSpeed;
 
        if (isDataTraceFullyRevealed) {
          currentBaseSpeedY *= 4;
@@ -166,7 +207,7 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
   const lastScrollY = useRef(0);
   const scrollTimeoutRef = useRef<number | null>(null);
 
-  const handlePointerMove = (e: any) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const x = (e.clientX / window.innerWidth) * 2 - 1;
     const y = -(e.clientY / window.innerHeight) * 2 + 1;
     setPointer({ x, y });
