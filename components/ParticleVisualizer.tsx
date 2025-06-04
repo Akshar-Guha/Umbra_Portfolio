@@ -164,7 +164,11 @@ const Particles: React.FC<{
 
     const mat = pts.material as THREE.PointsMaterial;
 
-    if (isDataTraceFullyRevealed) {
+    if (isUmbraTiltActive) {
+      // Set a specific color when Umbra Tilt is active
+      mat.color.set(new THREE.Color('#4477ff')); // Example: Light Blue
+    } else if (isDataTraceFullyRevealed) {
+       // Keep color cycling if only Data Trace is revealed (before first tilt)
       colorCycleProgress.current += delta * colorCycleSpeed;
       colorCycleProgress.current %= 1;
 
@@ -173,8 +177,8 @@ const Particles: React.FC<{
       const lightness = 0.5;
 
       mat.color.setHSL(hue, saturation, lightness);
-
     } else {
+      // Use scroll-based color blending otherwise
       const numSegments = gradientColors.length - 1;
       if (mat && numSegments > 0) {
         const segmentIndex = Math.min(Math.floor(colorScrollFactor * numSegments), numSegments - 1);

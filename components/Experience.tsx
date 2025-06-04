@@ -6,17 +6,17 @@ const experiences = [
   {
     year: '2 more to Go', // Placeholder year
     title: 'Umbra is my In game Name', // Updated title
-    description: 'OOoooK—so you\'ve been told what to do. Don\'t hesitate now.\nTake a deep breath, then **&&*** double-tap, like you\'re calling up something Faster than you.think', // Updated description for 1st block
+    description: 'OOoooK—so you\'ve got the hint. Don\'t hesitate now.\n**&&*** double-tap, not everything has a purpose. ', // Updated description for 1st block
   },
   {
-    year: 'what a waste,', // Placeholder year
+    year: 'chill & grill', // Placeholder year
     title: 'Whats Up', // Updated title
-    description: 'You just wasted your focus with a single tap. Someone who knew what they were doing would\'ve skipped that and gone straight for the {Umbra} icon with a double-tap. &&', // Updated description for 2nd block
+    description: 'trust is a must. Someone who knew what they were doing would\'ve skipped that and gone straight for the {Umbra} icon with a double-tap. &&', // Updated description for 2nd block
   },
   {
     year: 'Lets end this perfectly', // Placeholder year
     title: 'Here, Data Is handled with Privacy Not Piracy,', // Updated title
-    description: 'But fine—if you still need your little routine, **tap four times** on {Umbra}. Watch how the shadows change into shapes you won\'t forget.\nRemember Block 2 instructions: there\'s no room for half-steps in darkness.\n–x–0', // Updated description for 3rd block
+    description: 'But fine—if you still need your little routine, **tap four times** on {Umbra}.Enjoy the chill Vibe once you get high .\nRemember Block 2 instructions: there\'s no room for half-steps in darkness.\n–x–0', // Updated description for 3rd block
   },
   // Add more placeholder entries as needed
 ];

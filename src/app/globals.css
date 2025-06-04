@@ -42,7 +42,11 @@ body {
 
 /* Ensure html and body take full height for background to always show */
 html, body {
-  height: 100%;
+  min-height: 100%; /* Ensure html and body are at least 100% of parent/viewport height */
+}
+
+body {
+  min-height: 100vh; /* Ensure body is at least viewport height */
 }
 
 html {
