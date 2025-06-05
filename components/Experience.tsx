@@ -6,17 +6,17 @@ const experiences = [
   {
     year: '2 more to Go', // Placeholder year
     title: 'Umbra is my In game Name', // Updated title
-    description: 'OOoooK—so you\'ve got the hint. Don\'t hesitate now.\n**&&*** double-tap, not everything has a purpose. ', // Updated description for 1st block
+    description: 'Running low on sleep, not instinct.\'ve got the hint. Double tap. You already know Don\'t hesitate now.\n**&&*** double-tap, not everything has a purpose! ', // Updated description for 1st block
   },
   {
     year: 'chill & grill', // Placeholder year
-    title: 'Whats Up', // Updated title
-    description: 'trust is a must. Someone who knew what they were doing would\'ve skipped that and gone straight for the {Umbra} icon with a double-tap. &&', // Updated description for 2nd block
+    title: 'Whats Up, The Real Ones Knows', // Updated title
+    description: 'You’re reading this? Respect! I always just tap and chill .You think first. Big brain. please Double-tap {Umbra} like you mean it. trust is a must. &&', // Updated description for 2nd block
   },
   {
-    year: 'Lets end this perfectly', // Placeholder year
-    title: 'Here, Data Is handled with Privacy Not Piracy,', // Updated title
-    description: 'But fine—if you still need your little routine, **tap four times** on {Umbra}.Enjoy the chill Vibe once you get high .\nRemember Block 2 instructions: there\'s no room for half-steps in darkness.\n–x–0', // Updated description for 3rd block
+    year: 'The Sign-Off', // Placeholder year
+    title: 'Handled in privacy, never piracy — that’s the oath behind the code.', // Updated title
+    description: 'But fine — if routine makes it better, Tap {Umbra} ×4. No cookies hunting anyone down,\n— Like a key you forgot you had to bring, but never lost.\n\n–x–0', // Updated description for 3rd block
   },
   // Add more placeholder entries as needed
 ];
