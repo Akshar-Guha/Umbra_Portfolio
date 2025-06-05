@@ -34,8 +34,7 @@ const Particles: React.FC<{
   colorScrollFactor: number;
   isDataTraceFullyRevealed: boolean;
   isUmbraTiltActive: boolean;
-  zOffset: number;
-}> = ({ config, isHovering, pointer, burst, scrollSpeed, colorScrollFactor, isDataTraceFullyRevealed, isUmbraTiltActive, zOffset }) => {
+}> = ({ config, isHovering, pointer, burst, scrollSpeed, colorScrollFactor, isDataTraceFullyRevealed, isUmbraTiltActive }) => {
   const ref = useRef<THREE.Points>(null);
   const groupRef = useRef<THREE.Group>(null);
 
@@ -104,11 +103,6 @@ const Particles: React.FC<{
       group.rotation.y += (0 - group.rotation.y) * 0.05;
       group.rotation.z += (0 - group.rotation.z) * 0.05;
     }
-
-    // Apply zOffset to the group's position (reduced smoothing for testing)
-    group.position.z += (zOffset - group.position.z) * 0.3; // Increased smoothing influence
-
-    console.log(`zOffset: ${zOffset}, group.position.z: ${group.position.z}`); // For debugging
 
     // Apply flow direction and speed multiplier when Umbra Tilt is active
     if (isUmbraTiltActive && pts.geometry instanceof THREE.BufferGeometry) {
@@ -217,79 +211,10 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
   const lastScrollY = useRef(0);
   const scrollTimeoutRef = useRef<number | null>(null);
 
-  // New state for Z-axis control
-  const [zOffset, setZOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartY = useRef(0);
-  const initialZOffset = useRef(0);
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    console.log('handlePointerDown triggered!'); // DEBUG: New log
-    if (e.pointerType === 'mouse' && e.button === 0) { // Left click for mouse drag
-      setIsDragging(true);
-      console.log('isDragging set to TRUE after Pointer Down'); // DEBUG: New log
-      dragStartY.current = e.clientY;
-      initialZOffset.current = zOffset; // Capture current zOffset
-      e.currentTarget.setPointerCapture(e.pointerId); // Re-add pointer capture
-      console.log('Pointer Down: isDragging true, dragStartY:', dragStartY.current, 'initialZOffset:', initialZOffset.current); // DEBUG
-    }
-  };
-
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    console.log('handlePointerMove: isDragging is', isDragging); // DEBUG: New log
-    if (isDragging) {
-      const deltaY = e.clientY - dragStartY.current;
-      const newZOffset = initialZOffset.current + deltaY * 0.5; // Invert movement direction
-      setZOffset(newZOffset);
-      console.log('Pointer Move: deltaY:', deltaY, 'newZOffset:', newZOffset); // DEBUG
-    } else { // Reinstated else block for pointer updates when not dragging
-      const x = (e.clientX / window.innerWidth) * 2 - 1;
-      const y = -(e.clientY / window.innerHeight) * 2 + 1;
-      setPointer({ x, y });
-    }
-  };
-
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    setIsDragging(false);
-    console.log('isDragging set to FALSE after Pointer Up'); // DEBUG: New log
-    e.currentTarget.releasePointerCapture(e.pointerId); // Re-add pointer release
-    console.log('Pointer Up: isDragging false'); // DEBUG
-  };
-
-  const activeTouches = useRef<React.Touch[]>([]);
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    activeTouches.current = Array.from(e.touches) as React.Touch[];
-    if (activeTouches.current.length === 2) {
-      setIsDragging(true);
-      console.log('isDragging set to TRUE after Touch Start'); // DEBUG: New log
-      dragStartY.current = (activeTouches.current[0].clientY + activeTouches.current[1].clientY) / 2;
-      initialZOffset.current = zOffset; // Capture current zOffset
-      console.log('Touch Start: isDragging true, dragStartY:', dragStartY.current, 'initialZOffset:', initialZOffset.current); // DEBUG
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log('handleTouchMove: isDragging is', isDragging); // DEBUG: New log
-    activeTouches.current = Array.from(e.touches) as React.Touch[];
-    if (isDragging && activeTouches.current.length === 2) {
-      const currentAvgY = (activeTouches.current[0].clientY + activeTouches.current[1].clientY) / 2;
-      const deltaY = currentAvgY - dragStartY.current;
-      const newZOffset = initialZOffset.current + deltaY * 0.5; // Same increased sensitivity as mouse
-      setZOffset(newZOffset);
-      console.log('Touch Move: deltaY:', deltaY, 'newZOffset:', newZOffset); // DEBUG
-    } else if (!isDragging && e.touches.length === 1) {
-      const x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-      const y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-      setPointer({ x, y });
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    setIsDragging(false);
-    console.log('isDragging set to FALSE after Touch End'); // DEBUG: New log
-    activeTouches.current = [];
-    console.log('Touch End: isDragging false'); // DEBUG
+    const x = (e.clientX / window.innerWidth) * 2 - 1;
+    const y = -(e.clientY / window.innerHeight) * 2 + 1;
+    setPointer({ x, y });
   };
 
   const handleClick = () => {
@@ -297,17 +222,11 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
     setTimeout(() => setBurst(false), 500);
   };
 
-  const handleClickCanvas = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) {
-      handleClick();
-    }
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const rawDeltaScroll = currentScrollY - lastScrollY.current;
-
+      
       let speedFactor = rawDeltaScroll * 0.005;
       speedFactor = Math.max(-0.2, Math.min(0.2, speedFactor));
       setSmoothedScrollSpeed(prevSpeed => prevSpeed * 0.85 + speedFactor * 0.15);
@@ -316,12 +235,12 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
       const maxScroll = scrollHeight - clientHeight;
-
+      
       let progress = 0;
       if (maxScroll > 0) {
         progress = Math.min(1, Math.max(0, currentScrollY / maxScroll));
       }
-
+      
       const nonlinearFactor = Math.pow(progress, 1.2);
       setColorScrollFactor(nonlinearFactor);
 
@@ -347,14 +266,9 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
   return (
     <Canvas
       camera={{ position: [0, 0, 15], fov: 60 }}
-      style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0 }} // Revert background, keep sizing and positioning
-      onPointerDown={handlePointerDown}
-      onPointerMove={(e) => { console.log('Canvas Pointer Move Detected!'); handlePointerMove(e); } }
-      onPointerUp={handlePointerUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onClick={handleClickCanvas}
+      style={{ /* background: 'black' */ }}
+      onPointerMove={handlePointerMove}
+      onClick={handleClick}
     >
       <Particles 
         config={config}
@@ -365,9 +279,8 @@ const ParticleVisualizer: React.FC<ParticleVisualizerProps> = ({ config, isHover
         colorScrollFactor={colorScrollFactor}
         isDataTraceFullyRevealed={isDataTraceFullyRevealed}
         isUmbraTiltActive={isUmbraTiltActive}
-        zOffset={zOffset} // Pass the new zOffset prop
       />
-      {/* <OrbitControls enableDamping dampingFactor={0.1} enabled={!isDragging} /> */} {/* Temporarily remove OrbitControls for debugging */}
+      <OrbitControls enableDamping dampingFactor={0.1} />
     </Canvas>
   );
 };

@@ -103,7 +103,7 @@ export default function Home() {
     <main className="w-screen relative">
       {/* Particle Visualizer - Positioned absolutely behind content */}
       <div
-        className="fixed inset-0 z-20 h-screen"
+        className="fixed inset-0 z-0 h-screen"
         onPointerEnter={handleParticlePointerEnter}
         onPointerLeave={handleParticlePointerLeave}
         // onPointerMove is handled by the Canvas component internally
