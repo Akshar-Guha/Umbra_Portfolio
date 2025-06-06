@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preload" as="image" href="/images/peakpx(1).jpg" media="(max-width: 767px)" />
+        <link rel="preload" as="image" href="/images/peakpx-mobile.jpg" media="(max-width: 767px)" />
         <link rel="preload" as="image" href="/images/peakpx.jpg" media="(min-width: 768px)" />
       </head>
       <body>
