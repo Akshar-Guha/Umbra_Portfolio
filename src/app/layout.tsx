@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/theme.css";
+import GoogleAnalytics from "../../components/GoogleAnalytics"; // Adjust path as needed
 
 export const metadata: Metadata = {
   title: "Umbra - Data with privacy, not piracy.",
@@ -20,6 +21,7 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <GoogleAnalytics />
       </body>
     </html>
   );
