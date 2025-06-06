@@ -4,23 +4,26 @@ import React, { useEffect } from 'react';
 
 const GoogleAnalytics: React.FC = () => {
   useEffect(() => {
-    // Load the Google Analytics script
-    const script = document.createElement('script');
-    script.src = "https://www.googletagmanager.com/gtag/js?id=G-R6Y1679L0G";
-    script.async = true;
-    document.head.appendChild(script);
-
-    // @ts-ignore
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments);}
-    // @ts-ignore
-    gtag('js', new Date());
-    // @ts-ignore
-    gtag('config', 'G-R6Y1679L0G');
-
     const GTM_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
     if (GTM_ID) {
-      // ... existing code ...
+      // Load the Google Analytics script
+      const script = document.createElement('script');
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      // @ts-ignore
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      function gtag() {
+        (window as any).dataLayer.push(arguments);
+      }
+      // @ts-ignore
+      gtag('js', new Date());
+      // @ts-ignore
+      gtag('config', GTM_ID, {
+        page_path: window.location.pathname,
+      });
     }
 
     // Cleanup function to remove the script when the component unmounts (optional, as it's typically persistent)
