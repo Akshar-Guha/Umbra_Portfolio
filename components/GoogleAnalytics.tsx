@@ -10,13 +10,18 @@ const GoogleAnalytics: React.FC = () => {
     script.async = true;
     document.head.appendChild(script);
 
-    // Initialize Google Analytics
+    // @ts-ignore
     window.dataLayer = window.dataLayer || [];
     function gtag(){window.dataLayer.push(arguments);}
     // @ts-ignore
     gtag('js', new Date());
     // @ts-ignore
     gtag('config', 'G-R6Y1679L0G');
+
+    const GTM_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+    if (GTM_ID) {
+      // ... existing code ...
+    }
 
     // Cleanup function to remove the script when the component unmounts (optional, as it's typically persistent)
     return () => {
