@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/theme.css";
 import GoogleAnalytics from "../../components/GoogleAnalytics"; // Adjust path as needed
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Umbra - Data with privacy, not piracy.",
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body>
         {children}
         <GoogleAnalytics />
+        <Analytics />
       </body>
     </html>
   );
